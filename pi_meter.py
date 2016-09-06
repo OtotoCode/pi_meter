@@ -171,9 +171,14 @@ if __name__ == '__main__':
     #main loop
     while True:
         check_state(SLAVE_ADDRESS)
+        time.sleep(0.1)
         w_temp = get_data(SLAVE_ADDRESS,0x31)
+        time.sleep(0.1)
         o_temp = get_data(SLAVE_ADDRESS,0x32)
+        time.sleep(0.1)
         o_press = get_data(SLAVE_ADDRESS,0x33)
+        time.sleep(0.1)
         b_level = get_data(SLAVE_ADDRESS,0x34)
-	write_data()
-        time.sleep(1.0)
+        time.sleep(0.1)
+        write_data()
+        time.sleep(0.1)
