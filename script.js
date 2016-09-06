@@ -69,6 +69,16 @@ var turn_flg=0;
 var fs = require('fs');
 var filepath = './meter_data.json';
 
+//ウィンドウの最小化
+document.getElementById("im_opls").addEventListener("click", function (e) {
+	browserWindow.minimize(); 
+});
+
+//終了処理
+document.getElementById("im_wtmp").addEventListener("click", function (e) {
+	browserWindow.close();
+}); 
+
 //丸メーターの移動
 function mv_analog_p(){
 	a_wtmp.style.left = 0+'px';
