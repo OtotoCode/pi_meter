@@ -209,6 +209,9 @@ void get_message(int n){
       read_rom_config(); //reload config
       break;
     }
+  }else if((cmd[0] >= 48) && (cmd[0] < 79)) //0x30~0x4F return message state 
+  {
+  	message_state = cmd[0];
   }
   else if ((cmd[0]==0) && (cmd[3]==120))
   {
@@ -225,7 +228,7 @@ void get_message(int n){
 
 //send message to pi
 void send_message(){
-  //when get cmd switch
+  //cmd switch
   switch (message_state) {
    case 0x11: //ino_sleep_time (minutes)
    Wire.write(wait_minutes);
@@ -236,18 +239,31 @@ void send_message(){
    case 0x13: //pi in sleep wakeup time 
    Wire.write(pi_osw_time);
    break; 
- 
-   case 0x31: //water temp
-   Wire.write(r_wtmp);
+
+   //analog read
+   case 0x31: //water temp upper bit
+   Wire.write(r_wtmp >> 8);
    break;
-   case 0x32: //oil temp
-   Wire.write(r_otmp);
+   case 0x32: //water temp low bit
+   Wire.write(r_wtmp & 0xFF);
    break;
-   case 0x33: //oil press
-   Wire.write(r_opls);
+   case 0x33: //oil temp upper bit
+   Wire.write(r_otmp >> 8 );
    break;
-   case 0x34: //battely level
-   Wire.write(r_b_lv);
+   case 0x34: //oil temp low bit
+   Wire.write(r_otmp & 0xFF);
+   break;
+   case 0x35: //oil press upper bit
+   Wire.write(r_opls >> 8);
+   break;
+   case 0x36: //oil press low bit
+   Wire.write(r_opls & 0xFF);
+   break;
+   case 0x37: //battery level upper bit
+   Wire.write(r_b_lv >> 8);
+   break;
+   case 0x38: //battely level low bit
+   Wire.write(r_b_lv & 0xFF);
    break;
  
    case 0x50: //

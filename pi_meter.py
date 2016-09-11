@@ -80,22 +80,41 @@ def check_state(addr):
         raise
 
 #get car data
-def get_data(addr,data):
-    TRY = I2C_TRY
-    while TRY:
+def get_analog_level(addr,u_data,l_data):
+    TRY1 = I2C_TRY
+    TRY2 = I2C_TRY
+    analog_leve=0
+    while TRY1:
         try:
-            reading = int(bus.read_byte_data(addr,data))
-            return reading
+            reading = int(bus.read_byte_data(addr,u_data))
+            analog_level = reading << 8
         except IOError as e:
             print "get car data IO error"
-            TRY-=1
+            TRY1-=1
         except :
             print "get car date Unexcepted error"
             raise
         else:
             break
 
-    if not TRY:
+    if not TRY1:
+        raise
+
+    while TRY2:
+        try:
+            reading = int(bus.read_byte_data(addr,l_data))
+            analog_level = analog_level | reading
+            return analog_level
+        except IOError as e:
+            print "get car data IO error"
+            TRY2-=1
+        except :
+            print "get car date Unexcepted error"
+            raise
+        else:
+            break
+
+    if not TRY2:
         raise
 
 #set config to ino
@@ -139,6 +158,7 @@ def write_data():
     m_data["opls"]=get_oil_press(o_press)
     with open('meter_data.json','w') as f:
         json.dump(m_data, f, sort_keys=True, indent=4)
+	f.flush()
 
 #main
 if __name__ == '__main__':
@@ -171,14 +191,9 @@ if __name__ == '__main__':
     #main loop
     while True:
         check_state(SLAVE_ADDRESS)
-        time.sleep(0.1)
-        w_temp = get_data(SLAVE_ADDRESS,0x31)
-        time.sleep(0.1)
-        o_temp = get_data(SLAVE_ADDRESS,0x32)
-        time.sleep(0.1)
-        o_press = get_data(SLAVE_ADDRESS,0x33)
-        time.sleep(0.1)
-        b_level = get_data(SLAVE_ADDRESS,0x34)
-        time.sleep(0.1)
+        w_temp = get_analog_level(SLAVE_ADDRESS,0x31,0x32)
+        o_temp = get_analog_level(SLAVE_ADDRESS,0x33,0x34)
+        o_press = get_analog_level(SLAVE_ADDRESS,0x35,0x36)
+        b_level = get_analog_level(SLAVE_ADDRESS,0x38,0x38)
         write_data()
         time.sleep(0.1)
