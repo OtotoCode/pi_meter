@@ -195,10 +195,13 @@ function opening() {
 
 //データの読み出し
 function check_data() {
-	var obj = JSON.parse(fs.readFileSync(filepath, 'utf8'));
-	tmp_wtmp1=parseInt(obj["wtmp"]);
-	tmp_otmp1=parseInt(obj["otmp"]);
-	tmp_opls1=parseInt(obj["opls"]);
+	try{
+		var json_data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+		tmp_wtmp1=parseInt(json_data["wtmp"]);
+		tmp_otmp1=parseInt(json_data["otmp"]);
+		tmp_opls1=parseInt(json_data["opls"]);
+	}catch (err){
+	}
 }
 
 //テスト用　check_data()　の代わり　今は使用していない
