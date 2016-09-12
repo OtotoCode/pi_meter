@@ -138,11 +138,17 @@ def set_config(addr,cmd1,cmd2,cmd3,cmd4):
 
 #get thermistor
 def get_therm(tmp):
+    if tmp == 0:
+        TMP = 1
+    else:
+       TMP = tmp
     temp = 0
-    rr1 = THERM_R1 * tmp / (1024.0 - tmp)
+    rr1 = THERM_R1 * TMP / (1024.0 - TMP)
     t = 1 / ( math.log( rr1/THERM_R0 ) / THERM_B  +  1/THERM_T0 )
     temp = (t - 273.5)
     return int(temp)
+
+
 
 #get oil_press
 def get_oil_press(tmp):
