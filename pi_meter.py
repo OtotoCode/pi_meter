@@ -138,7 +138,7 @@ def set_config(addr,cmd1,cmd2,cmd3,cmd4):
 
 #get thermistor
 def get_therm(tmp):
-    if tmp == 0:
+    if ( tmp <= 0) | ( tmp > 1023):
         TMP = 1
     else:
        TMP = tmp
